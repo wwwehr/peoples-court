@@ -12,6 +12,7 @@ python-dotenv = "^1.0.1"
 cdp-langchain = "^0.0.13"
 py-sr25519-bindings = "^0.2.1"
 huggingface-hub = "^0.28.1"
+pillow = "^11.1.0"
 
 [build-system]
 requires = ["poetry-core"]
