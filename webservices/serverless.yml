@@ -1,0 +1,56 @@
+service: pinata-api-service
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1  # Change this to your preferred region
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'  # For all binary types
+  environment:
+    PINATA_API_KEY: ${env:PINATA_API_KEY}
+    PINATA_SECRET_KEY: ${env:PINATA_SECRET_KEY}
+
+package:
+  patterns:
+    - '!personas/**'
+    - '!node_modules/**'
+    - '!venv/**'
+    - '!.venv/**'
+    - '!.env'
+    - '!.git/**'
+    - '!.pytest_cache/**'
+    - '!__pycache__/**'
+    - '!.serverless/**'
+    - 'pinata_handler.py'
+    - 'requirements.txt'
+
+functions:
+  api:
+    handler: app.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: any
+    timeout: 30
+    memorySize: 256
+    environment:
+      PYTHONPATH: /var/runtime:/var/task:/opt/python
+    layers:
+      - !Ref PythonRequirementsLambdaLayer
+
+custom:
+  pythonRequirements:
+    layer:
+      name: python-deps
+      description: Python dependencies for Pinata API
+    noDeploy:
+      - coverage
+      - pytest
+      - pytest-cov
+    dockerizePip: true
+
+plugins:
+  - serverless-python-requirements
