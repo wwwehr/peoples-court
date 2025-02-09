@@ -1,0 +1,23 @@
+# Node.js dependencies
+node_modules/
+
+# Hardhat artifacts and cache
+artifacts/
+cache/
+
+# TypeChain generated files (if you're using TypeChain)
+typechain/
+
+# Environment variable files
+.env
+.env.local
+.env.*.local
+
+# Coverage reports (if using solidity-coverage or similar)
+coverage/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
