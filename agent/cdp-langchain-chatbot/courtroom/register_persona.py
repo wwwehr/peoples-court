@@ -1,12 +1,13 @@
 
 from cdp import Wallet
+from cdp_langchain.tools import CdpTool
 from pydantic import BaseModel, Field
 
 from courtroom.constants import (
     MY_ABI,
 )
 
-COURTROOM_REGISTER_PROMPT = """
+COURTROOM_REGISTER_PERSONA_PROMPT = """
 This tool can only be used to perfom a function call on a contract with ETH. Do not use this tool for any other purpose, or trading any assets.
 
 Inputs:
@@ -19,8 +20,8 @@ Important notes:
 """
 
 
-class CourtroomRegisterInput(BaseModel):
-    """Input argument schema for courtroom register action."""
+class CourtroomRegisterPersonaInput(BaseModel):
+    """Input argument schema for courtroom register persona action."""
 
     contract_address: str = Field(
         ...,
@@ -36,7 +37,7 @@ class CourtroomRegisterInput(BaseModel):
 def courtroom_register_persona(
     wallet: Wallet, contract_address: str, personaUri: str
 ) -> str:
-    """Register the URL of your persona upload.
+    """Register the URL of your persona upload to the courtroom contract.
 
     Args:
         wallet (Wallet): The wallet to create the token from.
@@ -59,12 +60,13 @@ def courtroom_register_persona(
     return f"Registered persona onchain with transaction hash: {invocation.transaction.transaction_hash}"
 
 
-def initCourtroomRegister():
+def initCourtroomRegisterPersona(agentkit):
     """Courtroom register persona definition."""
 
-    return {
-        "name": "courtroom_register_action",
-        "description": COURTROOM_REGISTER_PROMPT,
-        "args_schema": CourtroomRegisterInput,
-        "func": courtroom_register_persona,
-    }
+    return CdpTool(
+        cdp_agentkit_wrapper=agentkit,
+        name="courtroom_register_persona_action",
+        description=COURTROOM_REGISTER_PERSONA_PROMPT,
+        args_schema=CourtroomRegisterPersonaInput,
+        func=courtroom_register_persona,
+    )

@@ -158,7 +158,7 @@ export function CaseDetail({ caseId }: { caseId: number }) {
     },
   });
 
-  console.log(`${case_.caseUri} -> ${JSON.stringify(caseFile, null, 4)}`);
+  console.log(`${case_.caseUri} -> ${JSON.stringify(case_.id, null, 4)}`);
 
   const handleVote = async (isGuilty: boolean) => {
     try {

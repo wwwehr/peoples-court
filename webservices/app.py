@@ -72,6 +72,14 @@ class PersonaCreate(BaseModel):
     personality: str
     details: dict
 
+class Argument(BaseModel):
+    summary: str
+    content: str
+
+class Evidence(BaseModel):
+    summary: str
+    content: str
+
 class Complaint(BaseModel):
     summary: str
     content: str
@@ -86,6 +94,36 @@ async def create_persona(persona: PersonaCreate):
         # Upload to Pinata
         name = f"{persona.name}.json"
         ipfs_hash = await pinata.pin_json(name, persona.model_dump())
+
+        return {
+            "status": "success",
+            "ipfs_hash": ipfs_hash,
+            "gateway_url": pinata.get_gateway_url(ipfs_hash),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/argument")
+async def create_argument(argument: Argument):
+    try:
+        # Upload to Pinata
+        name = f"{argument.summary}.txt"
+        ipfs_hash = await pinata.pin_json(name, argument.model_dump())
+
+        return {
+            "status": "success",
+            "ipfs_hash": ipfs_hash,
+            "gateway_url": pinata.get_gateway_url(ipfs_hash),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/evidence")
+async def create_evidence(evidence: Evidence):
+    try:
+        # Upload to Pinata
+        name = f"{evidence.summary}.txt"
+        ipfs_hash = await pinata.pin_json(name, evidence.model_dump())
 
         return {
             "status": "success",

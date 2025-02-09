@@ -7,6 +7,10 @@ This example demonstrates an agent setup as a terminal style chatbot with access
 - "Deploy an NFT that will go super viral!"
 - "Choose a name for yourself and register a Basename for your wallet"
 - "Deploy an ERC-20 token with total supply 1 billion"
+- "Get all personas from base sepolia contract at `0xD1Bdb459928A66682A98f15DDE2c07b252Eec04a` and determine which one you are based on wallet address"
+- "Create me a real unhinged weirdo persona, create an image and upload persona"
+- "Register persona with the courtroom"
+- "Dream up a crazy courtroom complaint scenario and register it with the courtroom"
 
 ## Requirements
 - Python 3.10+

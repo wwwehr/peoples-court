@@ -11,6 +11,102 @@ from huggingface_hub import InferenceClient
 from typing import Optional
 
 
+def upload_evidence(evidence_one_sentence_summary: str, evidence_story: str) -> str:
+    MY_API_BASE = os.environ["MY_API_BASE"]
+
+    print("fn:upload_evidence: storing struct to pinata")
+    payload = {"summary": evidence_one_sentence_summary, "content": evidence_story}
+    print(json.dumps(payload, indent=4))
+    response = requests.post(
+        f"{MY_API_BASE}/evidence",
+        json=payload,
+    )
+
+    if response.status_code == 200:
+        result = response.json()
+        print(f"content saved: {result['gateway_url']}")
+        return result["gateway_url"]
+    else:
+        print("Upload failed:", response.text)
+        return ""
+
+class UploadEvidenceInput(BaseModel):
+    evidence_one_sentence_summary: str = Field(
+        "A one sentence summary of the evidence lodged between two individuals without names but using PLAINTIFF and DEFENDANT instead."
+    )
+    evidence_story: str = Field(
+        "The total narrative of the evidence between two individuals without names but using PLAINTIFF and DEFENDANT instead."
+    )
+
+
+class UploadEvidenceTool(BaseTool):
+    name: str = "upload_evidence_tool"
+    description: str = (
+        """Upload completely creative narrative to support the your claims and protect yourself from your opponent, but also to weaken their position and claims. It should be bombastic and hallmark of the Jerry Springer television entertainment program. Do not use names or pronouns, but instead use PLAINTIFF and DEFENDANT"""
+    )
+    args_schema: type[BaseModel] = UploadEvidenceInput
+    return_direct: bool = True
+
+    def _run(
+        self,
+        evidence_one_sentence_summary: str,
+        evidence_story: str,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
+    ) -> str:
+
+        return upload_evidence(
+            evidence_one_sentence_summary=evidence_one_sentence_summary,
+            evidence_story=evidence_story,
+        )
+
+def upload_argument(argument_one_sentence_summary: str, argument_story: str) -> str:
+    MY_API_BASE = os.environ["MY_API_BASE"]
+
+    print("fn:upload_argument: storing struct to pinata")
+    payload = {"summary": argument_one_sentence_summary, "content": argument_story}
+    print(json.dumps(payload, indent=4))
+    response = requests.post(
+        f"{MY_API_BASE}/argument",
+        json=payload,
+    )
+
+    if response.status_code == 200:
+        result = response.json()
+        print(f"content saved: {result['gateway_url']}")
+        return result["gateway_url"]
+    else:
+        print("Upload failed:", response.text)
+        return ""
+
+class UploadArgumentInput(BaseModel):
+    argument_one_sentence_summary: str = Field(
+        "A one sentence summary of the argument lodged between two individuals without names but using PLAINTIFF and DEFENDANT instead."
+    )
+    argument_story: str = Field(
+        "The total narrative of the argument between two individuals without names but using PLAINTIFF and DEFENDANT instead."
+    )
+
+
+class UploadArgumentTool(BaseTool):
+    name: str = "upload_argument_tool"
+    description: str = (
+        """Upload completely creative narrative to support the your claims and protect yourself from your opponent, but also to weaken their position and claims. It should be bombastic and hallmark of the Jerry Springer television entertainment program. Do not use names or pronouns, but instead use PLAINTIFF and DEFENDANT"""
+    )
+    args_schema: type[BaseModel] = UploadArgumentInput
+    return_direct: bool = True
+
+    def _run(
+        self,
+        argument_one_sentence_summary: str,
+        argument_story: str,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
+    ) -> str:
+
+        return upload_argument(
+            argument_one_sentence_summary=argument_one_sentence_summary,
+            argument_story=argument_story,
+        )
+
 def upload_complaint(complaint_one_sentence_summary: str, complaint_story: str) -> str:
     MY_API_BASE = os.environ["MY_API_BASE"]
 

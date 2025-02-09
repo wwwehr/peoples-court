@@ -12,9 +12,15 @@ from langgraph.prebuilt import create_react_agent
 # Import CDP Agentkit Langchain Extension.
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
-from cdp_langchain.tools import CdpTool
-from my_tools import CreatePersonaTool, CreatePersonaImageTool, UploadPersonaTool, UploadComplaintTool
-from courtroom.register import initCourtroomRegister
+from my_tools import (
+    CreatePersonaTool,
+    CreatePersonaImageTool,
+    UploadPersonaTool,
+    UploadComplaintTool,
+)
+from courtroom.register_persona import initCourtroomRegisterPersona
+from courtroom.register_argument import initCourtroomRegisterArgument
+from courtroom.get_personas import initCourtroomGetAllPersonas
 
 # Configure a file to persist the agent's CDP MPC Wallet Data.
 wallet_data_file = "wallet_data.txt"
@@ -50,11 +56,17 @@ def initialize_agent():
     cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
     tools = cdp_toolkit.get_tools()
 
-    CourtroomRegisterAction = CdpTool(
-        cdp_agentkit_wrapper=agentkit,
-        **initCourtroomRegister()
+    tools.extend(
+        [
+            initCourtroomRegisterPersona(agentkit),
+            initCourtroomGetAllPersonas(agentkit),
+            initCourtroomRegisterArgument(agentkit),
+            CreatePersonaTool(),
+            CreatePersonaImageTool(),
+            UploadPersonaTool(),
+            UploadComplaintTool(),
+        ]
     )
-    tools.extend([CourtroomRegisterAction, CreatePersonaTool(), CreatePersonaImageTool(), UploadPersonaTool(), UploadComplaintTool()])
 
     # Store buffered conversation history in memory.
     memory = MemorySaver()
